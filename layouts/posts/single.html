@@ -1,0 +1,137 @@
+{{ define "main" }}
+<style>
+    .posts-bleed {
+        position: relative;
+        width: 100vw;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        margin-top: -165px;
+        margin-bottom: -140px; /* macht den Bereich bündig mit dem Footer (kompensiert main-Padding + Footer-Abstand) */
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .posts-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center top;
+        z-index: 0;
+    }
+
+    .posts-bg-blur,
+    .posts-bg-contain {
+        display: none;
+    }
+
+    .posts-bg-blur {
+        background-position: center;
+        filter: blur(40px) brightness(0.9);
+        transform: scale(1.15); /* verdeckt den unscharfen Rand */
+    }
+
+    .posts-bg-contain {
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        top: 50%;
+        left: 0;
+        right: 0;
+        bottom: auto;
+        height: 1650px; /* skaliert das scharfe Bild breiter, sodass die Inhalte (max. 900px) mit Rand darin liegen */
+        transform: translateY(-50%);
+    }
+
+    /* Ab großen Bildschirmen: komplettes Bild sichtbar (unbeschnitten), Rand mit weichgezeichneter Kopie gefüllt */
+    @media (min-width: 1600px) {
+        .posts-bg-sharp { display: none; }
+        .posts-bg-blur,
+        .posts-bg-contain { display: block; }
+    }
+
+    .posts-content {
+        position: relative;
+        z-index: 1;
+        padding: 200px 40px 100px;
+    }
+
+    .post-detail-card {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px;
+        background: var(--header-bg);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        border-radius: 14px;
+        box-shadow: 0 10px 34px rgba(0,0,0,0.25);
+    }
+
+    .post-detail-date {
+        text-align: left;
+        color: var(--accent);
+        font-size: 0.9em;
+        letter-spacing: 0.3px;
+        margin-bottom: 20px;
+    }
+
+    .post-detail-image {
+        display: block;
+        width: 100%;
+        max-height: 520px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        margin-bottom: 35px;
+    }
+
+    .post-detail-text {
+        color: var(--text);
+        font-size: 1.05em;
+        line-height: 1.8;
+    }
+
+    .post-detail-text p { margin-bottom: 1.2em; }
+    .post-detail-text p:last-child { margin-bottom: 0; }
+
+    .post-detail-back-wrap {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .post-detail-back {
+        display: inline-block;
+    }
+
+    @media (max-width: 640px) {
+        .posts-bleed { margin-top: -260px; margin-bottom: -120px; }
+        .posts-content { padding: 290px 20px 70px; }
+        .post-detail-card { padding: 26px; }
+        .post-detail-image { max-height: 320px; }
+    }
+</style>
+
+<div class="posts-bleed">
+    {{ with resources.Get "images/blog/Baum.jpg" }}
+    {{ $bg := (.Resize "1920x webp q75").RelPermalink }}
+    <div class="posts-bg posts-bg-sharp" style="background-image: url('{{ $bg }}');"></div>
+    <div class="posts-bg posts-bg-blur" style="background-image: url('{{ $bg }}');"></div>
+    <div class="posts-bg posts-bg-contain" style="background-image: url('{{ $bg }}');"></div>
+    {{ end }}
+
+    <div class="posts-content">
+        <div class="post-detail-card">
+            <div class="post-detail-date">{{ .Date.Format "02.01.2006" }}</div>
+            {{ with .Params.image }}
+            <img src="{{ . }}" alt="" class="post-detail-image">
+            {{ end }}
+            <div class="post-detail-text">{{ .Content }}</div>
+        </div>
+
+        <div class="post-detail-back-wrap">
+            <a href="{{ "posts/" | relLangURL }}" class="mini-gallery-btn post-detail-back">{{ i18n "blog_back" }}</a>
+        </div>
+    </div>
+</div>
+{{ end }}

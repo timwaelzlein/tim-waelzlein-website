@@ -1,0 +1,219 @@
+{{ define "main" }}
+<style>
+    .intro-bleed {
+        position: relative;
+        width: 100vw;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        overflow: hidden;
+    }
+
+    .intro-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+    }
+
+    .intro-content {
+        position: relative;
+        z-index: 1;
+        padding: 100px 40px;
+    }
+
+    .intro-card {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        background: var(--header-bg);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        border-radius: 14px;
+        box-shadow: 0 10px 34px rgba(0,0,0,0.25);
+    }
+
+    @media (max-width: 640px) {
+        .intro-content { padding: 60px 20px; }
+        .intro-card { padding: 36px 26px; }
+    }
+
+    .home-strip-bleed {
+        position: relative;
+        width: 100vw;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+    }
+
+    .home-strip {
+        display: flex;
+        height: clamp(220px, 30vw, 420px);
+    }
+
+    .home-strip-img {
+        flex-basis: 0;
+        flex-shrink: 0;
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    @media (max-width: 640px) {
+        .home-strip { height: 45vw; }
+    }
+
+    /* Featured Works: fliegen von unten ein, sobald man zu ihnen scrollt */
+    @keyframes flyInUp {
+        from {
+            opacity: 0;
+            transform: translateY(70px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .featured-photo {
+        opacity: 0;
+        transform: translateY(70px);
+    }
+
+    .featured-works.in-view .featured-photo {
+        animation: flyInUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .featured-works.in-view .featured-photo:nth-child(1) { animation-delay: 0.1s; }
+    .featured-works.in-view .featured-photo:nth-child(2) { animation-delay: 0.25s; }
+    .featured-works.in-view .featured-photo:nth-child(3) { animation-delay: 0.4s; }
+
+    .featured-photo.fly-in-done {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .featured-photo { opacity: 1; transform: none; }
+        .featured-works.in-view .featured-photo { animation: none; }
+    }
+</style>
+
+<div class="hero-bleed">
+    <section class="hero-slideshow">
+        {{ range $i, $e := slice
+            (dict "src" "/images/home/eintagsfliege-home.jpg" "alt" "Eintagsfliege")
+            (dict "src" "/images/home/Waldohreule-home.jpg" "alt" "Junge Waldohreule")
+            (dict "src" "/images/home/Fuchs-home.jpg" "alt" "Rotfuchs")
+            (dict "src" "/images/home/weberbock-home.jpg" "alt" "Weberbockkäfer")
+            (dict "src" "/images/home/Haubentaucher-home.jpg" "alt" "Haubentaucher-Paar beim Balzen")
+            (dict "src" "/images/home/Reiherente-home.jpg" "alt" "Reiherente")
+            (dict "src" "/images/home/Schwarzmilan-home.jpg" "alt" "Schwarzmilan")
+            (dict "src" "/images/home/libelle-home.jpg" "alt" "Libelle")
+        }}
+        <img src="{{ $e.src }}" alt="{{ $e.alt }}" class="hero-slide{{ if eq $i 0 }} active{{ end }}">
+        {{ end }}
+    </section>
+</div>
+<script>
+    (function () {
+        var slides = document.querySelectorAll('.hero-slide');
+        if (slides.length < 2) return;
+        var current = 0;
+        setInterval(function () {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }, 5000);
+    })();
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var section = document.querySelector('.featured-works');
+        if (!section) return;
+
+        document.querySelectorAll('.featured-photo').forEach(function (el) {
+            el.addEventListener('animationend', function () {
+                el.classList.add('fly-in-done');
+            });
+        });
+
+        if (!('IntersectionObserver' in window)) {
+            section.classList.add('in-view');
+            return;
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    section.classList.add('in-view');
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.3 });
+        observer.observe(section);
+    });
+</script>
+
+<div class="intro-bleed">
+    {{ with resources.Get "images/contact/Pilz.jpg" }}
+    <div class="intro-bg" style="background-image: url('{{ (.Resize "1920x webp q80").RelPermalink }}');"></div>
+    {{ end }}
+    <div class="intro-content">
+        <div class="intro-card">
+            <div class="home-intro">
+            {{ .Content }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{{/* Die 3 neuesten/besten Werke - hier einfach die Bildpfade austauschen */}}
+<div class="featured-works-bleed">
+    <div class="featured-works">
+        {{ range slice "images/voegel/Eisvogel-3.jpg" "images/makro/Mothman.jpg" "images/andere/Bisam.jpg" }}
+        {{ with resources.Get . }}
+        <img src="{{ (.Resize "900x webp q82").RelPermalink }}" alt="" class="featured-photo">
+        {{ end }}
+        {{ end }}
+    </div>
+</div>
+<div class="mini-gallery-cta">
+    <a href="{{ "gallery/" | relLangURL }}" class="mini-gallery-btn">{{ i18n "gallery_cta" }}</a>
+</div>
+
+<div class="home-strip-bleed">
+    <div class="home-strip">
+        {{ range slice "images/home/Berge.jpg" "images/home/Berge-2.jpg" "images/home/Soca.jpg" }}
+        {{ with resources.Get . }}
+        {{ $img := .Resize "1200x webp q80" }}
+        {{ $ratio := div (mul $img.Width 1.0) $img.Height }}
+        <img src="{{ $img.RelPermalink }}" alt="" class="home-strip-img" style="flex-grow: {{ $ratio }};">
+        {{ end }}
+        {{ end }}
+    </div>
+</div>
+
+<div class="about-teaser-bleed">
+    <div class="about-teaser-link">
+        {{ with resources.Get "images/teaser/mountains.png" }}
+        <img src="{{ (.Resize "1920x webp q75").RelPermalink }}" alt="" class="about-teaser-bg">
+        {{ end }}
+        <div class="about-teaser-group">
+            <a href="{{ "about/" | relLangURL }}" class="about-teaser-column">{{ i18n "about_teaser_btn" }}</a>
+            {{ with resources.Get "images/teaser/timmisitzend.png" }}
+            <img src="{{ (.Resize "x1200 webp q85").RelPermalink }}" alt="Tim Wälzlein" class="about-teaser-figure">
+            {{ end }}
+        </div>
+    </div>
+</div>
+{{ end }}

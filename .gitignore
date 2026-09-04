@@ -1,0 +1,21 @@
+# Hugo
+/public/
+/resources/
+.hugo_build.lock
+
+# Claude Code (local/session-specific)
+.claude/settings.local.json
+.claude/*.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies
+node_modules/

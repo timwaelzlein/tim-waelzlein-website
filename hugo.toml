@@ -1,0 +1,68 @@
+baseURL = "https://example.com/"
+locale = "de-DE"
+title = "Tim Wälzlein - Wildlife & Makro Fotografie"
+defaultContentLanguage = "de"
+defaultContentLanguageInSubdir = false
+
+[params]
+  author = "Tim Wälzlein"
+
+[outputs]
+  home = ["HTML", "JSON"]
+
+[languages]
+  [languages.de]
+    label = "Deutsch"
+    locale = "de-DE"
+    weight = 1
+    title = "Tim Wälzlein - Wildlife & Makro Fotografie"
+    [languages.de.params]
+      description = "Erkundung der Natur durch die Linse - Wildlife, Vögel und Makrofotografie"
+    [[languages.de.menu.main]]
+      name = "Home"
+      url = "/"
+      weight = 1
+    [[languages.de.menu.main]]
+      name = "Galerie"
+      url = "/gallery/"
+      weight = 2
+    [[languages.de.menu.main]]
+      name = "Blog"
+      url = "/posts/"
+      weight = 3
+    [[languages.de.menu.main]]
+      name = "Über mich"
+      url = "/about/"
+      weight = 4
+    [[languages.de.menu.main]]
+      name = "Kontakt"
+      url = "/contact/"
+      weight = 5
+
+  [languages.en]
+    label = "English"
+    locale = "en-US"
+    weight = 2
+    title = "Tim Wälzlein - Wildlife & Macro Photography"
+    [languages.en.params]
+      description = "Exploring nature through the lens - wildlife, birds and macro photography"
+    [[languages.en.menu.main]]
+      name = "Home"
+      url = "/en/"
+      weight = 1
+    [[languages.en.menu.main]]
+      name = "Gallery"
+      url = "/en/gallery/"
+      weight = 2
+    [[languages.en.menu.main]]
+      name = "Blog"
+      url = "/en/posts/"
+      weight = 3
+    [[languages.en.menu.main]]
+      name = "About"
+      url = "/en/about/"
+      weight = 4
+    [[languages.en.menu.main]]
+      name = "Contact"
+      url = "/en/contact/"
+      weight = 5

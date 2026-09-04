@@ -1,0 +1,10 @@
+<div class="photo-stack">
+    {{ range .Params }}
+    {{ $src := . }}
+    {{ with resources.Get $src }}
+        <img src="{{ (.Resize "500x webp q80").RelPermalink }}" alt="" class="stack-photo">
+    {{ else }}
+        <img src="{{ $src }}" alt="" class="stack-photo">
+    {{ end }}
+    {{ end }}
+</div>

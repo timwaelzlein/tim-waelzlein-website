@@ -1,0 +1,7 @@
+{{ $type := .Get "type" | default "cutout" }}
+{{ $side := .Get "side" }}
+{{ if eq $side "center" }}
+<img src="{{ .Get "src" }}" alt="{{ .Get "alt" }}" class="feature-photo">
+{{ else }}
+<img src="{{ .Get "src" }}" alt="{{ .Get "alt" }}" class="float-{{ $type }} float-{{ $side }}">
+{{ end }}

@@ -1,0 +1,387 @@
+{{ define "main" }}
+<style>
+    .gallery-bleed {
+        position: relative;
+        width: 100vw;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        margin-top: 40px;
+        padding: 0 20px;
+    }
+
+    .gallery-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.4s ease;
+        cursor: pointer;
+    }
+    
+    /* Zellgröße richtet sich nach dem echten Seitenverhältnis des Bildes */
+    .gallery-item.gi-wide { grid-column: span 2; }
+    .gallery-item.gi-tall { grid-row: span 2; }
+    
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        margin: 0;
+        box-shadow: none;
+        transition: transform 0.4s ease;
+    }
+    
+    .gallery-item:hover img {
+        transform: scale(1.05);
+    }
+    
+    .gallery-item:hover {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .gallery-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .gallery-item:hover .gallery-overlay {
+        opacity: 1;
+    }
+    
+    .zoom-icon {
+        color: white;
+        font-size: 2.5em;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    /* Lightbox */
+    .lightbox {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.95);
+        animation: fadeIn 0.3s;
+    }
+    
+    .lightbox.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .lightbox-content {
+        position: relative;
+        max-width: 90%;
+        max-height: 92vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: zoomIn 0.3s;
+    }
+
+    .lightbox-content img {
+        max-width: 100%;
+        max-height: 76vh;
+        margin: 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    
+    .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 2em;
+        color: white;
+        cursor: pointer;
+        background: none;
+        border: none;
+        z-index: 1001;
+        transition: all 0.3s;
+    }
+    
+    .lightbox-close:hover {
+        color: var(--accent);
+    }
+    
+    .lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+        font-size: 2em;
+        cursor: pointer;
+        background: rgba(0,0,0,0.3);
+        padding: 15px 20px;
+        border: none;
+        transition: all 0.3s;
+        z-index: 1001;
+    }
+    
+    .lightbox-nav:hover {
+        background: rgba(0,0,0,0.6);
+        color: var(--accent);
+    }
+    
+    .lightbox-prev {
+        left: 20px;
+    }
+    
+    .lightbox-next {
+        right: 20px;
+    }
+    
+    .lightbox-caption {
+        color: white;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1em;
+        opacity: 0.8;
+        flex-shrink: 0;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes zoomIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .gallery-container {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .gallery-item.gi-wide { grid-column: span 1; }
+        .gallery-item.gi-tall { grid-row: span 1; }
+    }
+
+    /* Überschrift bleibt links im Container statt in der zentrierten Textspalte */
+    .gallery-title {
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+    }
+</style>
+
+<h1 class="gallery-title">{{ .Title }}</h1>
+
+{{ .Content }}
+
+{{ $photos := slice
+    (dict "src" "images/voegel/blackcap.jpg" "caption" "Mönchsgrasmücke (<i>Sylvia atricapilla</i>)")
+    (dict "src" "images/voegel/Waldohreule.jpg" "caption" "Junge Waldohreule (<i>Asio otus</i>)")
+    (dict "src" "images/voegel/Bachstelze-2.jpg" "caption" "Bachstelze (<i>Motacilla alba</i>)")
+    (dict "src" "images/voegel/Baumfalke-4.jpg" "caption" "Baumfalke (<i>Falco subbuteo</i>)")
+    (dict "src" "images/voegel/Buntspecht-4.jpg" "caption" "Buntspecht (<i>Dendrocopus major</i>)")
+    (dict "src" "images/voegel/Feldsperling.jpg" "caption" "Feldsperling (<i>Passer montanus</i>)")
+    (dict "src" "images/voegel/Goldammer-2.jpg" "caption" "Goldammer (<i>Emberiza citrinella</i>)")
+    (dict "src" "images/voegel/Haubentaucher-2.jpg" "caption" "Haubentaucher (<i>Podiceps cristatus</i>)")
+    (dict "src" "images/voegel/Haubentaucher-3.jpg" "caption" "Haubentaucher (<i>Podiceps cristatus</i>)")
+    (dict "src" "images/voegel/Hausrotschwanz1.jpg" "caption" "Hausrotschwanz (<i>Phoenicurus phoenicurus</i>)")
+    (dict "src" "images/voegel/Kleiber-2.jpg" "caption" "Kleiber (<i>Sitta europaea</i>)")
+    (dict "src" "images/voegel/Neuntöter-2.jpg" "caption" "Neuntöter (<i>Lanius collurio</i>)")
+    (dict "src" "images/voegel/Rauchschwalbe.jpg" "caption" "Rauchschwalbe (<i>Hirundo rustica</i>)")
+    (dict "src" "images/voegel/kingfisher-repeat.jpg" "caption" "Eisvogel (<i>Alcedo atthis</i>)")
+    (dict "src" "images/voegel/Rohrweihe-2.jpg" "caption" "Rohrweihe (<i>Circus aeruginosus</i>)")
+    (dict "src" "images/voegel/Rohrweihe-7.jpg" "caption" "Rohrweihe (<i>Circus aeruginosus</i>)")
+    (dict "src" "images/voegel/Swan1.jpg" "caption" "Höckerschwan (<i>Cygnus olor</i>)")
+    (dict "src" "images/voegel/Wespenbussard-2.jpg" "caption" "Wespenbussard (<i>Pernis apivorus</i>)")
+    (dict "src" "images/voegel/Buntspecht-3.jpg" "caption" "Buntspecht (<i>Dendrocopus major</i>)")
+    (dict "src" "images/voegel/Wespenbussard-3.jpg" "caption" "Wespenbussard (<i>Pernis apivorus</i>)")
+    (dict "src" "images/voegel/Eisvogel-3.jpg" "caption" "Eisvogel (<i>Alcedo atthis</i>)")
+    (dict "src" "images/voegel/Wespenbussard-4.jpg" "caption" "Wespenbussard (<i>Pernis apivorus</i>)")
+    (dict "src" "images/voegel/Zwergdommel-7.jpg" "caption" "Zwergdommel (<i>Ixobrychus minutus</i>)")
+    (dict "src" "images/voegel/Zwergdommel.jpg" "caption" "Zwergdommel (<i>Ixobrychus minutus</i>)")
+    (dict "src" "images/voegel/Zwergtaucher-4.jpg" "caption" "Zwergtaucher (<i>Tachybaptus ruficollis</i>)")
+    (dict "src" "images/voegel/gänsegeierauge.jpg" "caption" "Gänsegeier – Auge (<i>Gyps fulvus</i>)")
+    (dict "src" "images/voegel/reiherente1.jpg" "caption" "Reiherente (<i>Aythya fuligula</i>)")
+    (dict "src" "images/voegel/storch1.jpg" "caption" "Weißstorch (<i>Ciconia ciconia</i>)")
+    (dict "src" "images/voegel/zwergschabe-2.jpg" "caption" "Zwergschabe (<i>Microcarbo pygmeus</i>)")
+    (dict "src" "images/voegel/Buzzard2.jpg" "caption" "Mäusebussard (<i>Buteo buteo</i>)")
+    (dict "src" "images/voegel/Buzzard6.jpg" "caption" "Mäusebussard (<i>Buteo buteo</i>)")
+    (dict "src" "images/voegel/Duck1fullres-2.jpg" "caption" "Weibliche Stockente (<i>Anas platyrhynchos</i>)")
+    (dict "src" "images/voegel/Falke 1 fullres.jpg" "caption" "Turmfalke (<i>Falco tinnunculus</i>)")
+    (dict "src" "images/voegel/falke1.jpg" "caption" "Turmfalke (<i>Falco tinnunculus</i>)")
+    (dict "src" "images/voegel/Flamingo1.jpg" "caption" "Chileflamingo (<i>Phoenicopterus chilensis</i>)")
+    (dict "src" "images/voegel/Flussregenpfeifer.jpg" "caption" "Flussregenpfeifer (<i>Charadrius dubius</i>)")
+    (dict "src" "images/voegel/Pygmy-3fullres.jpg" "caption" "Sperlingskauz (<i>Glaucidium passerinum</i>)")
+    (dict "src" "images/voegel/Pygmy-4 fullres-1.jpg" "caption" "Sperlingskauz (<i>Glaucidium passerinum</i>)")
+    (dict "src" "images/voegel/Pygmy-4 fullres.jpg" "caption" "Sperlingskauz (<i>Glaucidium passerinum</i>)")
+    (dict "src" "images/voegel/pygmy2-fullres.jpg" "caption" "Sperlingskauz (<i>Glaucidium passerinum</i>)")
+    (dict "src" "images/voegel/Rabenkrähe-Fullres.jpg" "caption" "Rabenkrähe (<i>Corvus corone</i>)")
+    (dict "src" "images/voegel/Eisvogel.jpg" "caption" "Eisvogel (<i>Alcedo atthis</i>)")
+    (dict "src" "images/voegel/RobinCloseUp300126.jpg" "caption" "Rotkehlchen (<i>Erithacus rubecula</i>)")
+    (dict "src" "images/voegel/Schwanzmeise1fullres.jpg" "caption" "Schwanzmeise (<i>Aegithalos caudatus</i>)")
+    (dict "src" "images/voegel/Spinne1.jpg" "caption" "Laufwölfe unbestimmt (<i>Pardosa spec.</i>)")
+    (dict "src" "images/voegel/Starling1.jpg" "caption" "Star (<i>Sturnus vulgaris</i>)")
+    (dict "src" "images/voegel/Stieglitz1fullres.jpg" "caption" "Stieglitz (<i>Carduelis carduelis</i>)")
+    (dict "src" "images/voegel/Stieglitz2fullres.jpg" "caption" "Stieglitz (<i>Carduelis carduelis</i>)")
+    (dict "src" "images/voegel/Stieglitz4closefullres.jpg" "caption" "Stieglitz (<i>Carduelis carduelis</i>)")
+    (dict "src" "images/voegel/Teichrallefullres.jpg" "caption" "Teichralle (<i>Gallinula chloropus</i>)")
+    (dict "src" "images/voegel/Tit 2 fullres.jpg" "caption" "Blaueise (<i>Cyanistes caeruleus</i>)")
+    (dict "src" "images/voegel/Tit 3 fullres.jpg" "caption" "Blamueise (<i>Cyanistes caerulus</i>)")
+    (dict "src" "images/voegel/Tit 4 fullres.jpg" "caption" "Blamueise (<i>Cyanistes caerulus</i>)")
+    (dict "src" "images/voegel/Tit 5 fullres.jpg" "caption" "Blamueise (<i>Cyanistes caerulus</i>)")
+    (dict "src" "images/voegel/Trauerschnäpper1.jpg" "caption" "Trauerschnäpper (<i>Ficedula hypoleuca</i>)")
+    (dict "src" "images/voegel/Zwergtaucher-3.jpg" "caption"  "Zwergtaucher (<i>Tachybaptus ruficollis</i>)")
+    (dict "src" "images/makro/eintagsfliege.jpg" "caption" "Schildhaft unbestimmt (<i>Ecdyonurus spec.</i>)")
+    (dict "src" "images/makro/weberbock.jpg" "caption" "Weberbock (<i>Lamia textor</i>)")
+    (dict "src" "images/makro/Ameise.jpg" "caption" "Waldameise unbestimmt (<i>Formica spec.</i>)")
+    (dict "src" "images/makro/Eidechse Unbestimmt.jpg" "caption" "Mauereidechse (<i>Podarcis muralis</i>)")
+    (dict "src" "images/makro/Eidechsespec.jpg" "caption" "Vermutlich Waldeidechse (<i>Zootoca vivipara</i>)")
+    (dict "src" "images/makro/Eidechseunbestimmt-3.jpg" "caption" "Ruineneidechse (<i>Podarcis siculus</i>)")
+    (dict "src" "images/makro/Eidechseunbestimmt-5.jpg" "caption" "Mauereidechse (<i>Podarcis muralis</i>)")
+    (dict "src" "images/makro/Falterunbestimmt-3.jpg" "caption" "Kleines Wiesenvögelchen (<i>Coenonympha pamphilus</i>)")
+    (dict "src" "images/makro/Feldwespe.jpg" "caption" "Berg-Feldwespe (<i>Polistes biglumis</i>)")
+    (dict "src" "images/makro/Gebänderte Prachtlibelle1.jpg" "caption" "Gebänderte Prachtlibelle (<i>Calopteryx splendens</i>)")
+    (dict "src" "images/makro/Glühwürmchenlarve.jpg" "caption" "Glühwürmchenlarve des Großen Glühwürmchens (<i>Lampyris noctiluca</i>)")
+    (dict "src" "images/makro/Grünader Weißling.jpg" "caption" "Grünader-Weißling (<i>Pieris napi</i>)")
+    (dict "src" "images/makro/Grüner Scheinbockkäfer.jpg" "caption" "Grüner Scheinbockkäfer (<i>Oedemera nobilis</i>)")
+    (dict "src" "images/makro/Grünespinne1.jpg" "caption" "Kürbisspinne unestimmt (<i>Araniella spec.</i>)")
+    (dict "src" "images/makro/Hauhechelbläuling.jpg" "caption" "Hauhechel-bläuling (<i>Polyommatus icarus</i>)")
+    (dict "src" "images/makro/Hirschkäfer-2.jpg" "caption" "Hirschkäfer (<i>Lucanus cervus</i>)")
+    (dict "src" "images/makro/Laubfrosch.jpg" "caption" "Laubfrosch (<i>Hyla arborea</i>)")
+    (dict "src" "images/makro/Lepidoptera spec.jpg" "caption" "Feuriger Perlmuttfalter (<i>Fabriciana adippe</i>)")
+    (dict "src" "images/makro/Mothman.jpg" "caption" "Nachtfalter (unbestimmt)")
+    (dict "src" "images/makro/Libellespec.jpg" "caption" "Spitzenfleck (<i>Libellula fulva</i>)")
+    (dict "src" "images/makro/Raubwanze-3.jpg" "caption" "Geringelte Mordwanze (<i>Rhynocoris annulatus</i>)")
+    (dict "src" "images/makro/Raupeunbestimmt.jpg" "caption" "Königskerzen-Mönch (<i>Cucullia verbasci</i>)")
+    (dict "src" "images/makro/Ringelspinner-3.jpg" "caption" "Ringelspinner (<i>Malacosoma neustria</i>)")
+    (dict "src" "images/makro/Smaragdeidechse.jpg" "caption" "Smaragdeidechse (<i>Lacerta bilineata</i>)")
+    (dict "src" "images/makro/Wachtelweizen-Scheckenfalter.jpg" "caption" "Wachtelweizen-Scheckenfalter (<i>Melitaea athalia</i>)")
+    (dict "src" "images/makro/Wipfel-Stachelwanze.jpg" "caption" "Wipfel-Stachelwanze (<i>Acanthosoma haemorrhoidale</i>)")
+    (dict "src" "images/makro/Bee1.jpg" "caption" "Honigbiene (<i>Apis mellifera</i>)")
+    (dict "src" "images/makro/GrWollschweber1.jpg" "caption" "Großer Wollschweber (<i>Bombylius major</i>)")
+    (dict "src" "images/makro/Heupferde.jpg" "caption" "Vermutlich Warzenbeißer (<i>Decticus verrucivorus</i>)")
+    (dict "src" "images/makro/Hirschkäfer1.jpg" "caption" "Hirschkäfer (<i>Lucanus cervus</i>)")
+    (dict "src" "images/makro/Käferunbestimmt-3.jpg" "caption" "Feld-Sandlaufkäfer (<i>Cicindela campestris</i>)")
+    (dict "src" "images/makro/Laufwolfunbestimmt.jpg" "caption" "Laufölfe ubestimmt (<i>Pardosa spec.</i>)")
+    (dict "src" "images/makro/Ringelspinner.jpg" "caption" "Ringelspinner (<i>Malacosoma neustria</i>)")
+    (dict "src" "images/makro/Rosenkäfer.jpg" "caption" "GoldglänzenderRosenkäfer (<i>Cetonia aurata</i>)")
+    (dict "src" "images/makro/Schulterbock.jpg" "caption" "Schulterbock (<i>Oxymirus cursor</i>)")
+    (dict "src" "images/makro/Spinneunbestimmt-20.jpg" "caption" "Spinne (unbestimmt)")
+    (dict "src" "images/makro/Spinneunbestimmt-4.jpg" "caption" "Spinne (unbestimmt)")
+    (dict "src" "images/makro/Springspinne3.jpg" "caption" "Springspinne (<i>Salticidae spec.</i>)")
+    (dict "src" "images/makro/Springspinne4.jpg" "caption" "Springspinne (<i>Salticidae spec.</i>)")
+    (dict "src" "images/makro/Springspinne5.jpg" "caption" "Springspinne (<i>Salticidae spec.</i>)")
+    (dict "src" "images/makro/springspinne1.jpg" "caption" "Springspinne (<i>Salticidae spec.</i>)")
+    (dict "src" "images/andere/Bisam.jpg" "caption" "Bisamratte (<i>Ondatra zibethicus</i>)")
+    (dict "src" "images/andere/Bisam-2.jpg" "caption" "Bisam (<i>Ondatra zibethicus</i>)")
+    (dict "src" "images/andere/Feuerlilie.jpg" "caption" "Feuerlilie (<i>Lilium bulbiferum</i>)")
+    (dict "src" "images/andere/Kröten1.jpg" "caption" "Erdkröte (<i>Bufo bufo</i>)")
+    (dict "src" "images/andere/Kröten2.jpg" "caption" "Erdkröte (<i>Bufo bufo</i>)")
+    (dict "src" "images/andere/Rotfuchs.jpg" "caption" "Rotfuchs (<i>Vulpes vulpes</i>)")
+    (dict "src" "images/andere/Rotfuchs-3.jpg" "caption" "Rotfuchs (<i>Vulpes vulpes</i>)")
+    (dict "src" "images/andere/Squirrel1.jpg" "caption" "Eurasisches Eichhörnchen (<i>Sciurus vulgaris</i>)")
+}}
+
+<div class="gallery-bleed">
+    <div class="gallery-container" id="gallery">
+        {{ range $p := $photos }}
+        {{ with resources.Get $p.src }}
+        {{ $thumb := .Resize "800x webp q75" }}
+        {{ $full := .Resize "1920x webp q82" }}
+        {{ $ratio := div .Width .Height }}
+        {{ $sizeClass := "" }}
+        {{ if gt $ratio 1.25 }}{{ $sizeClass = "gi-wide" }}{{ else if lt $ratio 0.8 }}{{ $sizeClass = "gi-tall" }}{{ end }}
+        <div class="gallery-item {{ $sizeClass }}" onclick="openLightbox(this)">
+            <img src="{{ $thumb.RelPermalink }}" alt="{{ $p.caption | plainify }}" loading="lazy" data-full="{{ $full.RelPermalink }}" data-caption="{{ $p.caption }}">
+            <div class="gallery-overlay">
+                <div class="zoom-icon">🔍</div>
+            </div>
+        </div>
+        {{ end }}
+        {{ end }}
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    <button class="lightbox-nav lightbox-prev" onclick="prevImage()">‹</button>
+    <div class="lightbox-content">
+        <img id="lightbox-image" src="" alt="">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+    <button class="lightbox-nav lightbox-next" onclick="nextImage()">›</button>
+</div>
+
+<script>
+    let currentImageIndex = 0;
+    let galleryImages = [];
+
+    function initGallery() {
+        const items = document.querySelectorAll('#gallery .gallery-item img');
+        galleryImages = Array.from(items).map((img) => ({
+            src: img.dataset.full,
+            caption: img.dataset.caption,
+        }));
+    }
+
+    function showImage(index) {
+        const img = galleryImages[index];
+        document.getElementById('lightbox-image').src = img.src;
+        document.getElementById('lightbox-caption').innerHTML = img.caption;
+    }
+
+    function openLightbox(el) {
+        const items = Array.from(document.querySelectorAll('#gallery .gallery-item'));
+        currentImageIndex = items.indexOf(el);
+        showImage(currentImageIndex);
+        document.getElementById('lightbox').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    function nextImage() {
+        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+        showImage(currentImageIndex);
+    }
+
+    function prevImage() {
+        currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+        showImage(currentImageIndex);
+    }
+
+    // Tastatur-Navigation
+    document.addEventListener('keydown', (e) => {
+        if (!document.getElementById('lightbox').classList.contains('active')) return;
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'Escape') closeLightbox();
+    });
+
+    initGallery();
+</script>
+
+{{ end }}

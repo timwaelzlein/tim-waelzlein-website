@@ -1,0 +1,26 @@
+[theme_toggle]
+other = "Toggle dark mode"
+
+[menu_open]
+other = "Open menu"
+
+[lang_switch]
+other = "DE"
+
+[lang_switch_aria]
+other = "Switch to the German version"
+
+[gallery_cta]
+other = "To the gallery →"
+
+[about_teaser_btn]
+other = "More about me →"
+
+[blog_back]
+other = "← Back to the blog"
+
+[footer_rights]
+other = "All rights reserved."
+
+[footer_tagline]
+other = "🌿 Nature that inspires - a greeting to everyone reading this!"

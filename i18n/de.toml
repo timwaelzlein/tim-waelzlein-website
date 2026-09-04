@@ -1,0 +1,26 @@
+[theme_toggle]
+other = "Dark Mode umschalten"
+
+[menu_open]
+other = "Menü öffnen"
+
+[lang_switch]
+other = "EN"
+
+[lang_switch_aria]
+other = "Zur englischen Version wechseln"
+
+[gallery_cta]
+other = "Zur Galerie →"
+
+[about_teaser_btn]
+other = "Mehr über mich →"
+
+[blog_back]
+other = "← Zurück zum Blog"
+
+[footer_rights]
+other = "Alle Rechte vorbehalten."
+
+[footer_tagline]
+other = "🌿 Natur, die begeistert - Gruß an Jeden, der das liest!"

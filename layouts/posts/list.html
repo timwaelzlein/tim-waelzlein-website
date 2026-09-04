@@ -1,0 +1,192 @@
+{{ define "main" }}
+<style>
+    .posts-bleed {
+        position: relative;
+        width: 100vw;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        margin-top: -165px;
+        margin-bottom: -140px; /* macht den Bereich bündig mit dem Footer (kompensiert main-Padding + Footer-Abstand) */
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .posts-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center top;
+        z-index: 0;
+    }
+
+    .posts-bg-blur,
+    .posts-bg-contain {
+        display: none;
+    }
+
+    .posts-bg-blur {
+        background-position: center;
+        filter: blur(40px) brightness(0.9);
+        transform: scale(1.15); /* verdeckt den unscharfen Rand */
+    }
+
+    .posts-bg-contain {
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        top: 50%;
+        left: 0;
+        right: 0;
+        bottom: auto;
+        height: 1650px; /* skaliert das scharfe Bild breiter, sodass die Karten (max. 900px) mit Rand darin liegen */
+        transform: translateY(-50%);
+    }
+
+    .posts-scrim {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 480px;
+        z-index: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.32) 45%, rgba(0,0,0,0) 100%);
+    }
+
+    /* Ab großen Bildschirmen: komplettes Bild sichtbar (unbeschnitten), Rand mit weichgezeichneter Kopie gefüllt */
+    @media (min-width: 1600px) {
+        .posts-bg-sharp { display: none; }
+        .posts-bg-blur,
+        .posts-bg-contain { display: block; }
+    }
+
+    .posts-content {
+        position: relative;
+        z-index: 1;
+        padding: 200px 40px 100px;
+    }
+
+    .posts-title {
+        max-width: 900px;
+        margin: 0 auto 50px;
+        color: #fff;
+        font-size: 2.4em;
+        font-weight: 400;
+        letter-spacing: 1px;
+        font-family: 'Georgia', serif;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.85), 0 4px 24px rgba(0,0,0,0.7);
+    }
+
+    .posts-intro {
+        max-width: 900px;
+        margin: -35px auto 50px;
+        color: #fff;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.85), 0 2px 16px rgba(0,0,0,0.7);
+        opacity: 0.95;
+    }
+
+    .post-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        max-width: 900px;
+        margin: 0 auto 30px;
+        padding: 30px;
+        background: var(--header-bg);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        border-radius: 14px;
+        box-shadow: 0 10px 34px rgba(0,0,0,0.25);
+        text-decoration: none;
+        color: var(--text);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .post-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 42px rgba(0,0,0,0.3);
+    }
+
+    .post-card-text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .post-card-title {
+        font-size: 1.5em;
+        font-weight: 400;
+        font-family: 'Georgia', serif;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .post-card-date {
+        font-size: 0.85em;
+        color: var(--accent);
+        margin-bottom: 12px;
+        letter-spacing: 0.3px;
+    }
+
+    .post-card-desc {
+        font-size: 1em;
+        line-height: 1.6;
+        color: var(--text);
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .post-card-image {
+        width: 220px;
+        aspect-ratio: 4 / 3;
+        height: auto;
+        object-fit: cover;
+        border-radius: 10px;
+        flex-shrink: 0;
+        margin: 0;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    }
+
+    @media (max-width: 640px) {
+        .posts-bleed { margin-top: -260px; margin-bottom: -120px; }
+        .posts-content { padding: 290px 20px 70px; }
+        .post-card { flex-direction: column; align-items: flex-start; padding: 24px; }
+        .post-card-image { width: 100%; aspect-ratio: 4 / 3; height: auto; order: -1; }
+        .posts-title { font-size: 1.9em; }
+    }
+</style>
+
+<div class="posts-bleed">
+    {{ with resources.Get "images/blog/Baum.jpg" }}
+    {{ $bg := (.Resize "1920x webp q75").RelPermalink }}
+    <div class="posts-bg posts-bg-sharp" style="background-image: url('{{ $bg }}');"></div>
+    <div class="posts-bg posts-bg-blur" style="background-image: url('{{ $bg }}');"></div>
+    <div class="posts-bg posts-bg-contain" style="background-image: url('{{ $bg }}');"></div>
+    {{ end }}
+    <div class="posts-scrim"></div>
+
+    <div class="posts-content">
+        <h1 class="posts-title">{{ .Title }}</h1>
+        {{ if .Content }}
+        <div class="posts-intro">{{ .Content }}</div>
+        {{ end }}
+
+        {{ range .Pages }}
+        <a href="{{ .RelPermalink }}" class="post-card">
+            <div class="post-card-text">
+                <div class="post-card-title">{{ .Title }}</div>
+                <div class="post-card-date">{{ .Date.Format "02.01.2006" }}</div>
+                {{ if .Description }}
+                <p class="post-card-desc">{{ .Description }}</p>
+                {{ end }}
+            </div>
+            {{ with .Params.image }}
+            <img src="{{ . }}" alt="" class="post-card-image">
+            {{ end }}
+        </a>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

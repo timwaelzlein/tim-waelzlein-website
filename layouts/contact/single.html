@@ -1,0 +1,121 @@
+{{ define "main" }}
+<style>
+    .contact-bleed {
+        position: relative;
+        width: 100vw;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        margin-top: -165px;
+        margin-bottom: -140px; /* macht den Bereich bündig mit dem Footer (kompensiert main-Padding + Footer-Abstand) */
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .contact-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+    }
+
+    .contact-scrim {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 340px;
+        z-index: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.32) 45%, rgba(0,0,0,0) 100%);
+    }
+
+    .contact-content {
+        position: relative;
+        z-index: 1;
+        padding: 200px 40px 100px;
+    }
+
+    .contact-title {
+        max-width: 700px;
+        margin: 0 auto 50px;
+        color: #fff;
+        font-size: 2.4em;
+        font-weight: 400;
+        letter-spacing: 1px;
+        font-family: 'Georgia', serif;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.85), 0 4px 24px rgba(0,0,0,0.7);
+    }
+
+    .contact-card {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 40px;
+        background: var(--header-bg);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        border-radius: 14px;
+        box-shadow: 0 10px 34px rgba(0,0,0,0.25);
+        color: var(--text);
+    }
+
+    .contact-card p {
+        margin-bottom: 1.2em;
+        line-height: 1.8;
+    }
+
+    .contact-card p:last-child {
+        margin-bottom: 0;
+    }
+
+    .contact-card h2 {
+        font-family: 'Georgia', serif;
+        font-weight: 400;
+        color: var(--primary);
+        margin-bottom: 20px;
+    }
+
+    .contact-card a {
+        color: var(--accent);
+    }
+
+    .contact-card hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 30px 0;
+    }
+
+    .contact-logo {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 35px 0 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    @media (max-width: 640px) {
+        .contact-bleed { margin-top: -260px; margin-bottom: -120px; }
+        .contact-content { padding: 290px 20px 70px; }
+        .contact-title { font-size: 1.9em; }
+        .contact-card { padding: 26px; }
+    }
+</style>
+
+<div class="contact-bleed">
+    {{ with resources.Get "images/contact/Pilz.jpg" }}
+    <div class="contact-bg" style="background-image: url('{{ (.Resize "1920x webp q80").RelPermalink }}');"></div>
+    {{ end }}
+    <div class="contact-scrim"></div>
+
+    <div class="contact-content">
+        <h1 class="contact-title">{{ .Title }}</h1>
+        <div class="contact-card">
+            {{ .Content }}
+            <img src="/images/logo.svg" alt="Tim Wälzlein Logo" class="contact-logo">
+        </div>
+    </div>
+</div>
+{{ end }}
