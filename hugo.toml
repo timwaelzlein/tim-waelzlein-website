@@ -3,9 +3,11 @@ locale = "de-DE"
 title = "Tim Wälzlein - Wildlife & Makro Fotografie"
 defaultContentLanguage = "de"
 defaultContentLanguageInSubdir = false
+enableRobotsTXT = true
 
 [params]
   author = "Tim Wälzlein"
+  ogImage = "/images/SNY08485-2.jpg"
 
 [outputs]
   home = ["HTML", "JSON"]
