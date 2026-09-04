@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .Title }} - Tim Wälzlein</title>
+    {{/* Favicon: sobald favicon.svg + apple-touch-icon.png (180x180) in static/ liegen, greift das automatisch */}}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <script>
         // Theme früh setzen, bevor CSS gemalt wird (verhindert Flackern)
         (function () {
