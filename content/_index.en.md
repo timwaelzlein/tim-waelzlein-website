@@ -3,7 +3,7 @@ title: "Tim Wälzlein"
 description: "Wildlife and macro photography"
 ---
 
-{{< floatimg src="/images/vogel-flug.png" alt="Bird in flight" side="left" >}}
+{{< floatimg src="images/home/vogel-flug.png" alt="Bird in flight" side="left" >}}
 # Welcome to my world
 
 I'm Tim,
@@ -21,7 +21,7 @@ Have fun exploring my portfolio and marvelling at nature!
 
 What I enjoy most: stalking with the telephoto lens or sitting in wait, bringing everything far away up close.
 
-{{< floatimg src="/images/tim-tele.png" alt="Tim with a telephoto lens" side="right" >}}
+{{< floatimg src="images/home/tim-tele.png" alt="Tim with a telephoto lens" side="right" >}}
 
 **🐛 Macro photography**
 

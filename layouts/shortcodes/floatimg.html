@@ -1,7 +1,11 @@
 {{ $type := .Get "type" | default "cutout" }}
 {{ $side := .Get "side" }}
-{{ if eq $side "center" }}
-<img src="{{ .Get "src" }}" alt="{{ .Get "alt" }}" class="feature-photo">
+{{ $src := .Get "src" }}
+{{ $alt := .Get "alt" }}
+{{ $class := cond (eq $side "center") "feature-photo" (printf "float-%s float-%s" $type $side) }}
+{{ $resizeWidth := cond (eq $side "center") "1600x" "700x" }}
+{{ with resources.Get $src }}
+<img src="{{ (.Resize (printf "%s webp q80" $resizeWidth)).RelPermalink }}" alt="{{ $alt }}" class="{{ $class }}" loading="lazy">
 {{ else }}
-<img src="{{ .Get "src" }}" alt="{{ .Get "alt" }}" class="float-{{ $type }} float-{{ $side }}">
+<img src="{{ $src }}" alt="{{ $alt }}" class="{{ $class }}" loading="lazy">
 {{ end }}
