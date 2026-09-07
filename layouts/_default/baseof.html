@@ -21,7 +21,14 @@
     <link rel="alternate" hreflang="x-default" href="{{ if eq .Site.Language.Lang "de" }}{{ .Permalink }}{{ else }}{{ range .Translations }}{{ .Permalink }}{{ end }}{{ end }}">
 
     {{/* Open Graph & Twitter Card: Vorschau beim Teilen des Links */}}
-    {{ $ogImage := .Params.image | default .Site.Params.ogImage | absURL }}
+    {{ $ogImage := "" }}
+    {{ if .Params.image }}
+        {{ $ogImage = .Params.image | absURL }}
+    {{ else }}
+        {{ with resources.Get .Site.Params.ogImage }}
+            {{ $ogImage = (.Resize "1200x webp q80").Permalink }}
+        {{ end }}
+    {{ end }}
     <meta property="og:site_name" content="Tim Wälzlein">
     <meta property="og:title" content="{{ .Title }}">
     <meta property="og:description" content="{{ $desc }}">
@@ -689,6 +696,22 @@
         letter-spacing: 0.5px;
     }
 
+    .footer-legal {
+        margin-top: 16px !important;
+        font-size: 0.85em !important;
+        opacity: 0.75;
+    }
+
+    .footer-legal a {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .footer-legal a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+    }
+
     .footer-signature {
         height: 60px;
         width: auto;
@@ -794,6 +817,9 @@
     <footer>
         <img src="/images/signature.png" alt="Tim Wälzlein" class="footer-signature">
         <p>&copy; {{ now.Format "2006" }} Tim Wälzlein. {{ i18n "footer_rights" }} | {{ i18n "footer_tagline" }}
+        </p>
+        <p class="footer-legal">
+            <a href="/impressum/">{{ i18n "legal_imprint" }}</a> &middot; <a href="/datenschutz/">{{ i18n "legal_privacy" }}</a>
         </p>
     </footer>
 

@@ -1,0 +1,18 @@
+{{ define "main" }}
+<style>
+    .legal-text h2 {
+        margin-top: 50px;
+    }
+    .legal-text p, .legal-text li {
+        color: var(--text);
+    }
+    .legal-text address {
+        font-style: normal;
+        margin-bottom: 1.2em;
+    }
+</style>
+<article class="legal-text">
+    <h1>{{ .Title }}</h1>
+    {{ .Content }}
+</article>
+{{ end }}

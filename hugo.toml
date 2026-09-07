@@ -7,7 +7,12 @@ enableRobotsTXT = true
 
 [params]
   author = "Tim Wälzlein"
-  ogImage = "/images/SNY08485-2.jpg"
+  ogImage = "images/about/SNY08485-2.jpg"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
 
 [outputs]
   home = ["HTML", "JSON"]
