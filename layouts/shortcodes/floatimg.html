@@ -4,8 +4,9 @@
 {{ $alt := .Get "alt" }}
 {{ $class := cond (eq $side "center") "feature-photo" (printf "float-%s float-%s" $type $side) }}
 {{ $resizeWidth := cond (eq $side "center") "1600x" "700x" }}
+{{ $loading := cond (eq (.Get "eager") "true") "eager" "lazy" }}
 {{ with resources.Get $src }}
-<img src="{{ (.Resize (printf "%s webp q80" $resizeWidth)).RelPermalink }}" alt="{{ $alt }}" class="{{ $class }}" loading="lazy">
+<img src="{{ (.Resize (printf "%s webp q80" $resizeWidth)).RelPermalink }}" alt="{{ $alt }}" class="{{ $class }}" loading="{{ $loading }}">
 {{ else }}
-<img src="{{ $src }}" alt="{{ $alt }}" class="{{ $class }}" loading="lazy">
+<img src="{{ $src }}" alt="{{ $alt }}" class="{{ $class }}" loading="{{ $loading }}">
 {{ end }}

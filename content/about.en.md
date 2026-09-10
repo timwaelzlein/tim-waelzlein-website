@@ -6,7 +6,7 @@ type: "about"
 
 ## My passion
 
-{{< floatimg src="images/about/SNY08485-2.jpg" alt="Tim in the Dolomites" side="left" type="photo" >}}
+{{< floatimg eager="true" src="images/about/SNY08485-2.jpg" alt="Tim in the Dolomites" side="left" type="photo" >}}
 Even as a kid I was always fascinated by cameras and their ability to capture moments, archive them, and let you relive them again and again. I believe this urge to capture and collect is one of my most defining traits, and it gives me an incredible amount of joy. So I'm all the more glad that with wildlife photography I've finally found something where I can refine my photo skills while being outside in nature at the same time. I love simply heading out without expecting to shoot the next wildlife picture of the year, but rather often seemingly finding nothing at all, only to unexpectedly stumble into a wonderful encounter and, in the best case, bring home a spectacular photo. For me, this combines my interest in technology and media with my love of nature - a love I didn't just gain during my biology studies in Münster, but one that's been burning in me since childhood. I used to only take photos on holidays, because I thought that's the only place I had cool subjects, and of course everything feels new and exciting on holiday, which is why those photos often feel special and stir up great emotions in us. But I quickly realised I wanted to learn more about the world of photography, and that my knowledge of species was still very limited (especially birds).
 
 {{< floatimg src="images/about/20260524_181143.jpg" alt="Tim photographing on a riverbank" side="right" type="photo" >}}

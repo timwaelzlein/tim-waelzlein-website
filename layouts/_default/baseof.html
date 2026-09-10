@@ -46,6 +46,8 @@
             var stored = localStorage.getItem('theme');
             var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             document.documentElement.setAttribute('data-theme', theme);
+            // Seite erst zeigen, wenn die Inhalte oben geladen sind (kein "Nachpoppen" der Bilder)
+            document.documentElement.classList.add('js-loading');
         })();
     </script>
     <style>
@@ -84,7 +86,19 @@
         color: var(--text);
         background: var(--bg);
         letter-spacing: 0.3px;
-        transition: background 0.3s ease, color 0.3s ease;
+        transition: background 0.3s ease, color 0.3s ease, opacity 0.4s ease;
+    }
+
+    /* Seite erst sanft einblenden, wenn die oberen Inhalte geladen sind - verhindert das "Nachpoppen" von Bildern */
+    html.js-loading body {
+        opacity: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html.js-loading body {
+            opacity: 1;
+            transition: none;
+        }
     }
 
     /* Header: schlanke, sticky Leiste - Logo + Nav links, Toggle rechts */
@@ -842,6 +856,25 @@
                 localStorage.setItem('theme', next);
                 updateIcon();
             });
+        })();
+    </script>
+
+    <script>
+        // Seite einblenden, sobald die oben sichtbaren Inhalte geladen sind (oder spätestens nach 1.5s)
+        (function () {
+            var root = document.documentElement;
+            var revealed = false;
+            function reveal() {
+                if (revealed) return;
+                revealed = true;
+                root.classList.remove('js-loading');
+            }
+            if (document.readyState === 'complete') {
+                reveal();
+            } else {
+                window.addEventListener('load', reveal);
+            }
+            setTimeout(reveal, 1500);
         })();
     </script>
 

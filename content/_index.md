@@ -3,7 +3,7 @@ title: "Tim Wälzlein"
 description: "Wildlife und Makrofotografie"
 ---
 
-{{< floatimg src="images/home/vogel-flug.png" alt="Fliegender Vogel" side="left" >}}
+{{< floatimg eager="true" src="images/home/vogel-flug.png" alt="Fliegender Vogel" side="left" >}}
 # Willkommen in meiner Welt
 
 Ich bin Tim, 
