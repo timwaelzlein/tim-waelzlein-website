@@ -121,11 +121,18 @@
             (dict "src" "images/home/libelle-home.jpg" "alt" "Libelle")
         }}
         {{ with resources.Get $e.src }}
-        {{ $slide := .Resize "2000x webp q78" }}
+        {{/* Mehrere Auflösungen: kleine Screens bekommen kleine Dateien, große/4K-Screens eine scharfe Version */}}
+        {{ $res := . }}
+        {{ $srcset := slice }}
+        {{ range slice 800 1400 2000 2800 3840 }}
+            {{ $r := $res.Resize (printf "%dx webp q80" .) }}
+            {{ $srcset = $srcset | append (printf "%s %dw" $r.RelPermalink .) }}
+        {{ end }}
+        {{ $fallback := .Resize "2000x webp q80" }}
         {{ if eq $i 0 }}
-        <img src="{{ $slide.RelPermalink }}" alt="{{ $e.alt }}" class="hero-slide active" fetchpriority="high">
+        <img src="{{ $fallback.RelPermalink }}" srcset="{{ delimit $srcset ", " }}" sizes="100vw" alt="{{ $e.alt }}" class="hero-slide active" fetchpriority="high">
         {{ else }}
-        <img data-src="{{ $slide.RelPermalink }}" alt="{{ $e.alt }}" class="hero-slide">
+        <img data-src="{{ $fallback.RelPermalink }}" data-srcset="{{ delimit $srcset ", " }}" sizes="100vw" alt="{{ $e.alt }}" class="hero-slide">
         {{ end }}
         {{ end }}
         {{ end }}
@@ -137,7 +144,11 @@
         if (slides.length < 2) return;
         var current = 0;
         function load(el) {
-            if (el && el.dataset.src) { el.src = el.dataset.src; delete el.dataset.src; }
+            if (el && el.dataset.src) {
+                if (el.dataset.srcset) { el.srcset = el.dataset.srcset; delete el.dataset.srcset; }
+                el.src = el.dataset.src;
+                delete el.dataset.src;
+            }
         }
         load(slides[1]); // nächstes Bild schon vorladen, damit der erste Wechsel nicht ruckelt
         setInterval(function () {
