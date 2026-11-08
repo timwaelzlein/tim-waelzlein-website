@@ -23,7 +23,7 @@
     {{/* Open Graph & Twitter Card: Vorschau beim Teilen des Links */}}
     {{ $ogImage := "" }}
     {{ if .Params.image }}
-        {{ $ogImage = .Params.image | absURL }}
+        {{ $ogImage = partial "post-image.html" (dict "path" .Params.image "width" 1200) | absURL }}
     {{ else }}
         {{ with resources.Get .Site.Params.ogImage }}
             {{ $ogImage = (.Resize "1200x webp q80").Permalink }}

@@ -1,0 +1,10 @@
+---
+title: "Das perfekte Motiv finden"
+date: 2026-11-06
+description: "Die besten finden sich oft direkt vor der Tür"
+image: "images/voegel/Robininthewoods-fullres.jpg"
+---
+
+# Das perfekte Motiv finden
+
+Also erst einmal glaube ich gibt es das nicht, denn wir haben es hier immer noch mit einer Kunstform zu tun und ob etwas schön oder gut oder perfekt ist, liegt hauptsächlich im Auge des Betrachters. Natürlich kann man in der Fotografie eine gewisse „Güte“ messen, da schaut man auf Kameraeinstellungen, Belichtung, Bearbeitung, Composition… ABER aus eigenen Erfahrungen muss ich sagen, dass diese „perfekten“ Bilder für mich persönlich eher langweilig sind, denn diese gibt es zuhauf. Vor allem in der Wildlife-Fotografie gibt es unzählige perfekt zentrierte Portraits von den seltensten und atemberaubendsten Arten. Allerdings finde ich, fehlt vielen dieser Fotos der Charakter und auch das, was eine Fotografie besonders macht, geht unter, da der Fokus Hauptsächlich auf dem Motiv liegt. Vielmehr ist es aber die Composition die ein Bild erst so richtig wirken lässt und bei mir ist das Beispiel Rotkehlchen da am besten. Rotkelchen gibt es hier in Münster sehr viele und vor allem im Stadtbereich sind sie sehr zutraulich. Das gibt einem die Möglichkeit die kleinen Vögelchen in den wildesten Szenarien und Posen zu Fotografieren und das meist sehr einfach. Für mich haben viele meine Rotkehlchen Fotos deutlich mehr Wirkung als zum Beispiel das Portrait der Zwergdommel, welches an sich perfekt ist – Belichtung, Auflösung, Schärfe etc. passt alles, aber irgendwie fehlt mir da was. Ich will gar nicht sagen, dass man aufhören soll auch mal nach seltenen Arten zu suchen, weil das auch sehr reizvoll ist, aber für mich ist es oft ein erfolgreicherer Tag mit einem unerwartet guten Bild einer häufigen Art nach Hause zu kommen als mit einem mittelmäßigen Foto von etwas eher Seltenem. Vor allem zu Beginn der Fotokarriere kann der Fokus auf diese unscheinbaren Arten schnell zu großartigen Fotos führen.

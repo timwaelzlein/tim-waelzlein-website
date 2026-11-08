@@ -1,0 +1,8 @@
+{{- /* Löst das Titelbild eines Posts auf: liegt es in assets/ (z.B. "images/voegel/Foto.jpg"), wird es verkleinert + als WebP ausgeliefert; sonst wird der Pfad unverändert (static/) genutzt. */ -}}
+{{- $p := .path -}}
+{{- $res := resources.Get (strings.TrimPrefix "/" $p) -}}
+{{- if $res -}}
+{{- ($res.Resize (printf "%dx webp q80" .width)).RelPermalink -}}
+{{- else -}}
+{{- $p -}}
+{{- end -}}

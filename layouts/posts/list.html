@@ -183,7 +183,7 @@
                 {{ end }}
             </div>
             {{ with .Params.image }}
-            <img src="{{ . }}" alt="" class="post-card-image">
+            <img src="{{ partial "post-image.html" (dict "path" . "width" 600) }}" alt="" class="post-card-image" loading="lazy">
             {{ end }}
         </a>
         {{ end }}

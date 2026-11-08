@@ -124,7 +124,7 @@
         <div class="post-detail-card">
             <div class="post-detail-date">{{ .Date.Format "02.01.2006" }}</div>
             {{ with .Params.image }}
-            <img src="{{ . }}" alt="" class="post-detail-image">
+            <img src="{{ partial "post-image.html" (dict "path" . "width" 1400) }}" alt="" class="post-detail-image" fetchpriority="high">
             {{ end }}
             <div class="post-detail-text">{{ .Content }}</div>
         </div>
