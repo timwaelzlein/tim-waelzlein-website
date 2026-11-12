@@ -1,0 +1,20 @@
+# Löst täglich einen neuen Netlify-Build aus, damit der neueste Instagram-Beitrag
+# (und die automatische Token-Verlängerung) aktuell bleibt.
+# Benötigt das GitHub-Secret NETLIFY_BUILD_HOOK (die Build-Hook-URL aus Netlify).
+name: Daily rebuild
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Netlify-Build anstoßen
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "NETLIFY_BUILD_HOOK nicht gesetzt"; exit 1; fi
+          curl -fsS -X POST -d '{}' "$HOOK"

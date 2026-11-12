@@ -49,6 +49,8 @@ Wenn Sie mich per E-Mail kontaktieren, werden Ihre Angaben (E-Mail-Adresse, ggf.
 
 Diese Website verlinkt auf externe Angebote wie YouTube. Erst wenn Sie einem solchen Link aktiv folgen, gelten die Datenschutzbestimmungen des jeweiligen Anbieters – auf dieser Website selbst werden dabei keine Daten an diese Dienste übertragen.
 
+**Instagram:** Auf der Startseite zeige ich mein Instagram-Profil (@timmisvideos) und meinen neuesten Beitrag an. Diese Inhalte werden nicht von Ihrem Browser bei Instagram geladen, sondern von mir beim Erstellen der Website automatisch über die Schnittstelle von Instagram (Meta Platforms Ireland Limited) abgerufen und als Kopie auf meinem eigenen Server (Netlify) gespeichert. Beim Aufruf dieser Website findet daher keine Datenübertragung an Instagram bzw. Meta statt. Erst wenn Sie den Link „Auf Instagram folgen“ oder den Beitrag anklicken, gelangen Sie zu Instagram; ab dann gelten die Datenschutzbestimmungen von Instagram.
+
 ## 7. SSL-/TLS-Verschlüsselung
 
 Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte eine SSL-/TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von "http://" auf "https://" wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.
@@ -57,4 +59,4 @@ Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertra
 
 Diese Datenschutzerklärung kann bei Weiterentwicklung dieser Website angepasst werden.
 
-*Stand: September 2026*
+*Stand: November 2026*

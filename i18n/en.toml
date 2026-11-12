@@ -30,3 +30,18 @@ other = "Imprint"
 
 [legal_privacy]
 other = "Privacy Policy"
+
+[insta_follow]
+other = "Follow on Instagram"
+
+[insta_latest]
+other = "Latest post"
+
+[insta_posts]
+other = "posts"
+
+[insta_followers]
+other = "followers"
+
+[insta_fallback_text]
+other = "More photos and videos on my Instagram channel."

@@ -73,3 +73,8 @@ enableRobotsTXT = true
       name = "Contact"
       url = "/en/contact/"
       weight = 5
+
+# Instagram-Daten beim Build nur kurz zwischenspeichern (damit der neueste Beitrag aktuell bleibt)
+[caches.getresource]
+  dir = ":cacheDir/:project"
+  maxAge = "30m"

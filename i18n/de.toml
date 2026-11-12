@@ -30,3 +30,18 @@ other = "Impressum"
 
 [legal_privacy]
 other = "Datenschutz"
+
+[insta_follow]
+other = "Auf Instagram folgen"
+
+[insta_latest]
+other = "Neuester Beitrag"
+
+[insta_posts]
+other = "Beiträge"
+
+[insta_followers]
+other = "Follower"
+
+[insta_fallback_text]
+other = "Mehr Fotos und Videos gibt es auf meinem Instagram-Kanal."

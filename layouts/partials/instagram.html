@@ -1,0 +1,91 @@
+{{/*
+  Instagram-Block für die Startseite.
+
+  Die Daten werden beim BUILD von Hugo über die Instagram-API geholt (nicht im Browser der Besucher).
+  Bilder werden lokal gespeichert -> Besucher laden nichts von Instagram/Meta, kein Cookie-Banner nötig.
+
+  Benötigt die Umgebungsvariable HUGO_INSTAGRAM_TOKEN (Netlify -> Site configuration -> Environment variables).
+  Fehlt sie oder schlägt die API fehl, wird eine schlichte Karte mit Link angezeigt – der Build bricht nie ab.
+*/}}
+{{ $handle := "timmisvideos" }}
+{{ $profileURL := printf "https://www.instagram.com/%s/" $handle }}
+{{ $token := getenv "HUGO_INSTAGRAM_TOKEN" }}
+{{ $profile := dict }}
+{{ $post := dict }}
+{{ $avatar := "" }}
+{{ $postImg := "" }}
+
+{{ if $token }}
+  {{/* Token bei jedem Build verlängern (gültig ~60 Tage, Seite wird täglich neu gebaut). Fehler hier sind unkritisch. */}}
+  {{ $refreshURL := printf "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=%s" $token }}
+  {{ with try (resources.GetRemote $refreshURL) }}
+    {{ with .Err }}{{ warnf "Instagram: Token konnte nicht verlängert werden (zu neu oder abgelaufen?)." }}{{ end }}
+  {{ end }}
+
+  {{/* Profil */}}
+  {{ $profileAPI := printf "https://graph.instagram.com/me?fields=username,name,biography,followers_count,media_count,profile_picture_url&access_token=%s" $token }}
+  {{ with try (resources.GetRemote $profileAPI) }}
+    {{ with .Err }}
+      {{ warnf "Instagram: Profil konnte nicht geladen werden – Fallback-Karte wird angezeigt." }}
+    {{ else }}{{ with .Value }}
+      {{ $parsed := .Content | transform.Unmarshal }}
+      {{ if and (reflect.IsMap $parsed) $parsed.username }}{{ $profile = $parsed }}{{ end }}
+    {{ end }}{{ end }}
+  {{ end }}
+
+  {{/* Neuester Beitrag (Video -> Vorschaubild) */}}
+  {{ $mediaAPI := printf "https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=1&access_token=%s" $token }}
+  {{ with try (resources.GetRemote $mediaAPI) }}
+    {{ with .Err }}
+      {{ warnf "Instagram: Beiträge konnten nicht geladen werden – Fallback-Karte wird angezeigt." }}
+    {{ else }}{{ with .Value }}
+      {{ $parsed := .Content | transform.Unmarshal }}
+      {{ if and (reflect.IsMap $parsed) $parsed.data (gt (len $parsed.data) 0) }}{{ with index $parsed.data 0 }}{{ $post = . }}{{ end }}{{ end }}
+    {{ end }}{{ end }}
+  {{ end }}
+
+  {{/* Bilder lokal speichern */}}
+  {{ with $profile.profile_picture_url }}
+    {{ with try (resources.GetRemote .) }}
+      {{ if not .Err }}{{ with .Value }}{{ $avatar = (.Resize "240x240 webp q85").RelPermalink }}{{ end }}{{ end }}
+    {{ end }}
+  {{ end }}
+  {{ $postImgURL := cond (eq $post.media_type "VIDEO") $post.thumbnail_url $post.media_url }}
+  {{ with $postImgURL }}
+    {{ with try (resources.GetRemote .) }}
+      {{ if not .Err }}{{ with .Value }}{{ $postImg = (.Resize "900x webp q82").RelPermalink }}{{ end }}{{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+<div class="insta-bleed">
+  <div class="insta-card">
+    <div class="insta-profile">
+      {{ if $avatar }}
+      <img src="{{ $avatar }}" alt="" class="insta-avatar" loading="lazy" width="120" height="120">
+      {{ else }}
+      <div class="insta-avatar insta-avatar-fallback" aria-hidden="true">📷</div>
+      {{ end }}
+      <div class="insta-name">{{ with $profile.name }}{{ . }}{{ else }}Tim Wälzlein{{ end }}</div>
+      <a href="{{ $profileURL }}" class="insta-handle" target="_blank" rel="noopener">@{{ $handle }}</a>
+      {{ with $profile.biography }}<p class="insta-bio">{{ . }}</p>{{ else }}<p class="insta-bio">{{ i18n "insta_fallback_text" }}</p>{{ end }}
+      {{ if $profile.followers_count }}
+      <div class="insta-stats">
+        <span><strong>{{ $profile.media_count }}</strong> {{ i18n "insta_posts" }}</span>
+        <span><strong>{{ $profile.followers_count }}</strong> {{ i18n "insta_followers" }}</span>
+      </div>
+      {{ end }}
+      <a href="{{ $profileURL }}" class="mini-gallery-btn insta-follow" target="_blank" rel="noopener">{{ i18n "insta_follow" }}</a>
+    </div>
+
+    {{ if $postImg }}
+    <a href="{{ $post.permalink }}" class="insta-post" target="_blank" rel="noopener" aria-label="{{ i18n "insta_latest" }}">
+      <img src="{{ $postImg }}" alt="{{ with $post.caption }}{{ . | plainify | truncate 120 }}{{ end }}" class="insta-post-img" loading="lazy">
+      <span class="insta-post-meta">
+        <span class="insta-post-label">{{ i18n "insta_latest" }}{{ with $post.timestamp }} · {{ (time .).Format "02.01.2006" }}{{ end }}</span>
+        {{ with $post.caption }}<span class="insta-post-caption">{{ . | truncate 140 }}</span>{{ end }}
+      </span>
+    </a>
+    {{ end }}
+  </div>
+</div>

@@ -137,6 +137,56 @@
         .featured-photo { opacity: 1; transform: none; }
         .featured-works.in-view .featured-photo { animation: none; }
     }
+
+    /* Instagram-Block */
+    .insta-bleed {
+        padding: 70px 24px 80px;
+    }
+    .insta-card {
+        max-width: 980px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+        align-items: center;
+        padding: 36px;
+        background: var(--header-bg);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        border-radius: 14px;
+        box-shadow: 0 10px 34px rgba(0,0,0,0.2);
+        border: 1px solid var(--border);
+    }
+    .insta-card:not(:has(.insta-post)) { grid-template-columns: 1fr; max-width: 520px; }
+    .insta-profile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+    .insta-avatar {
+        width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
+        border: 3px solid var(--primary); box-shadow: 0 6px 18px var(--shadow);
+    }
+    .insta-avatar-fallback { display: flex; align-items: center; justify-content: center; font-size: 3em; background: var(--card-bg); }
+    .insta-name { font-size: 1.25em; font-weight: 700; color: var(--text); margin-top: 6px; }
+    .insta-handle { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .insta-handle:hover { text-decoration: underline; }
+    .insta-bio { color: var(--text); line-height: 1.55; margin: 6px 0; white-space: pre-line; }
+    .insta-stats { display: flex; gap: 22px; color: var(--text); margin-bottom: 8px; }
+    .insta-follow { margin-top: 6px; }
+    .insta-post {
+        position: relative; display: block; border-radius: 12px; overflow: hidden;
+        box-shadow: 0 8px 24px var(--shadow); aspect-ratio: 1 / 1; text-decoration: none;
+    }
+    .insta-post-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+    .insta-post:hover .insta-post-img { transform: scale(1.04); }
+    .insta-post-meta {
+        position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 18px 16px;
+        display: flex; flex-direction: column; gap: 4px; color: #fff;
+        background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0));
+    }
+    .insta-post-label { font-size: 0.8em; letter-spacing: 0.4px; text-transform: uppercase; opacity: 0.9; }
+    .insta-post-caption { font-size: 0.92em; line-height: 1.4; }
+    @media (max-width: 720px) {
+        .insta-bleed { padding: 40px 16px 50px; }
+        .insta-card { grid-template-columns: 1fr; padding: 22px; gap: 24px; }
+    }
 </style>
 
 <div class="hero-bleed">
@@ -257,6 +307,8 @@
         {{ end }}
     </div>
 </div>
+
+{{ partial "instagram.html" . }}
 
 <div class="about-teaser-bleed">
     <div class="about-teaser-link">
