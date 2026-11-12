@@ -1,5 +1,5 @@
 # Löst wöchentlich (montags) einen neuen Netlify-Build aus, damit der neueste Instagram-Beitrag
-# (damit er aktuell bleibt; spart Netlify-Credits gegenüber täglich).
+# aktuell bleibt. Bewusst nicht täglich: jeder Build kostet 15 Netlify-Credits (Free-Plan: 300/Monat).
 # Benötigt das GitHub-Secret NETLIFY_BUILD_HOOK (die Build-Hook-URL aus Netlify).
 name: Weekly rebuild
 
