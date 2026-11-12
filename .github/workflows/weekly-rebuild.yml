@@ -1,11 +1,11 @@
-# Löst täglich einen neuen Netlify-Build aus, damit der neueste Instagram-Beitrag
-# (und die automatische Token-Verlängerung) aktuell bleibt.
+# Löst wöchentlich (montags) einen neuen Netlify-Build aus, damit der neueste Instagram-Beitrag
+# (damit er aktuell bleibt; spart Netlify-Credits gegenüber täglich).
 # Benötigt das GitHub-Secret NETLIFY_BUILD_HOOK (die Build-Hook-URL aus Netlify).
-name: Daily rebuild
+name: Weekly rebuild
 
 on:
   schedule:
-    - cron: "17 5 * * *"
+    - cron: "17 5 * * 1"
   workflow_dispatch:
 
 jobs:
