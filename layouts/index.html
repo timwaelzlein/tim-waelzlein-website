@@ -298,6 +298,8 @@
     <a href="{{ "gallery/" | relLangURL }}" class="mini-gallery-btn">{{ i18n "gallery_cta" }}</a>
 </div>
 
+{{ partial "instagram.html" . }}
+
 <div class="home-strip-bleed">
     <div class="home-strip">
         {{ range slice "images/home/Berge.jpg" "images/home/Berge-2.jpg" "images/home/Soca.jpg" }}
@@ -309,8 +311,6 @@
         {{ end }}
     </div>
 </div>
-
-{{ partial "instagram.html" . }}
 
 <div class="about-teaser-bleed">
     <div class="about-teaser-link">
