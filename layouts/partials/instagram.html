@@ -10,6 +10,10 @@
 {{ $handle := "timmisvideos" }}
 {{ $profileURL := printf "https://www.instagram.com/%s/" $handle }}
 {{ $token := getenv "HUGO_INSTAGRAM_TOKEN" }}
+{{/* Unified Login (graph.facebook.com) braucht zusätzlich die Konto-ID; ohne ID wird die Instagram-Login-Variante (graph.instagram.com/me) genutzt. */}}
+{{ $accountID := getenv "HUGO_INSTAGRAM_ACCOUNT_ID" }}
+{{ $base := "https://graph.instagram.com/me" }}
+{{ if $accountID }}{{ $base = printf "https://graph.facebook.com/v27.0/%s" $accountID }}{{ end }}
 {{ $profile := dict }}
 {{ $post := dict }}
 {{ $avatar := "" }}
@@ -17,13 +21,15 @@
 
 {{ if $token }}
   {{/* Token bei jedem Build verlängern (gültig ~60 Tage, Seite wird täglich neu gebaut). Fehler hier sind unkritisch. */}}
+  {{ if not $accountID }}
   {{ $refreshURL := printf "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=%s" $token }}
   {{ with try (resources.GetRemote $refreshURL) }}
     {{ with .Err }}{{ warnf "Instagram: Token konnte nicht verlängert werden (zu neu oder abgelaufen?)." }}{{ end }}
   {{ end }}
+  {{ end }}
 
   {{/* Profil */}}
-  {{ $profileAPI := printf "https://graph.instagram.com/me?fields=username,name,biography,followers_count,media_count,profile_picture_url&access_token=%s" $token }}
+  {{ $profileAPI := printf "%s?fields=username,name,biography,followers_count,media_count,profile_picture_url&access_token=%s" $base $token }}
   {{ with try (resources.GetRemote $profileAPI) }}
     {{ with .Err }}
       {{ warnf "Instagram: Profil konnte nicht geladen werden – Fallback-Karte wird angezeigt." }}
@@ -34,7 +40,7 @@
   {{ end }}
 
   {{/* Neuester Beitrag (Video -> Vorschaubild) */}}
-  {{ $mediaAPI := printf "https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=1&access_token=%s" $token }}
+  {{ $mediaAPI := printf "%s/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=1&access_token=%s" $base $token }}
   {{ with try (resources.GetRemote $mediaAPI) }}
     {{ with .Err }}
       {{ warnf "Instagram: Beiträge konnten nicht geladen werden – Fallback-Karte wird angezeigt." }}
