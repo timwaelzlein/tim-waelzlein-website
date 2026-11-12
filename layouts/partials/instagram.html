@@ -18,6 +18,7 @@
 {{ $post := dict }}
 {{ $avatar := "" }}
 {{ $postImg := "" }}
+{{ $postRes := "" }}
 
 {{ if $token }}
   {{/* Token bei jedem Build verlängern (gültig ~60 Tage, Seite wird täglich neu gebaut). Fehler hier sind unkritisch. */}}
@@ -59,7 +60,7 @@
   {{ $postImgURL := cond (eq $post.media_type "VIDEO") $post.thumbnail_url $post.media_url }}
   {{ with $postImgURL }}
     {{ with try (resources.GetRemote .) }}
-      {{ if not .Err }}{{ with .Value }}{{ $postImg = (.Resize "900x webp q82").RelPermalink }}{{ end }}{{ end }}
+      {{ if not .Err }}{{ with .Value }}{{ $postRes = .Process "webp q85" }}{{ $postImg = $postRes.RelPermalink }}{{ end }}{{ end }}
     {{ end }}
   {{ end }}
 {{ end }}
@@ -86,7 +87,7 @@
 
     {{ if $postImg }}
     <a href="{{ $post.permalink }}" class="insta-post" target="_blank" rel="noopener" aria-label="{{ i18n "insta_latest" }}">
-      <img src="{{ $postImg }}" alt="{{ with $post.caption }}{{ . | plainify | truncate 120 }}{{ end }}" class="insta-post-img" loading="lazy">
+      <img src="{{ $postImg }}" alt="{{ with $post.caption }}{{ . | plainify | truncate 120 }}{{ end }}" class="insta-post-img" loading="lazy" width="{{ $postRes.Width }}" height="{{ $postRes.Height }}">
       <span class="insta-post-meta">
         <span class="insta-post-label">{{ i18n "insta_latest" }}{{ with $post.timestamp }} · {{ (time .).Format "02.01.2006" }}{{ end }}</span>
         {{ with $post.caption }}<span class="insta-post-caption">{{ . | truncate 140 }}</span>{{ end }}
